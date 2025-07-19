@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Grocery Store</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        .item-list, .cart-list { margin-bottom: 30px; }
+        .item, .cart-item { display: flex; justify-content: space-between; padding: 8px; border-bottom: 1px solid #eee; }
+        button { margin-left: 10px; }
+        .cart-summary { font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h1>Grocery Store</h1>
+    <div>
+        <h2>Items</h2>
+        <div id="items" class="item-list"></div>
+    </div>
+    <div>
+        <h2>Cart</h2>
+        <div id="cart" class="cart-list"></div>
+        <div class="cart-summary">Total: $<span id="total">0.00</span></div>
+    </div>
+    <script>
+        let items = [];
+        let cart = {};
+
+        function renderItems() {
+            const itemsDiv = document.getElementById('items');
+            itemsDiv.innerHTML = '';
+            items.forEach((item, idx) => {
+                const div = document.createElement('div');
+                div.className = 'item';
+                div.innerHTML = `
+                    <span>${item.name}</span>
+                    <span>$${item.price.toFixed(2)}</span>
+                    <button onclick="addToCart(${idx})">Add</button>
+                `;
+                itemsDiv.appendChild(div);
+            });
+        }
+
+        function renderCart() {
+            const cartDiv = document.getElementById('cart');
+            cartDiv.innerHTML = '';
+            let total = 0;
+            Object.keys(cart).forEach(idx => {
+                const item = items[idx];
+                const qty = cart[idx];
+                total += item.price * qty;
+                const div = document.createElement('div');
+                div.className = 'cart-item';
+                div.innerHTML = `
+                    <span>${item.name} x ${qty}</span>
+                    <span>$${(item.price * qty).toFixed(2)}</span>
+                    <button onclick="removeFromCart(${idx})">Remove</button>
+                `;
+                cartDiv.appendChild(div);
+            });
+            document.getElementById('total').textContent = total.toFixed(2);
+        }
+
+        function addToCart(idx) {
+            cart[idx] = (cart[idx] || 0) + 1;
+            renderCart();
+        }
+
+        function removeFromCart(idx) {
+            if (cart[idx]) {
+                cart[idx] -= 1;
+                if (cart[idx] <= 0) delete cart[idx];
+                renderCart();
+            }
+        }
+
+        fetch('/items')
+            .then(res => res.json())
+            .then(data => {
+                items = data;
+                renderItems();
+            });
+    </script>
+</body>
+</html>
