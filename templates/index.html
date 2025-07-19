@@ -3,28 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <title>Grocery Store</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 40px; }
-        .item-list, .cart-list { margin-bottom: 30px; }
-        .item, .cart-item { display: flex; justify-content: space-between; padding: 8px; border-bottom: 1px solid #eee; }
-        button { margin-left: 10px; }
-        .cart-summary { font-weight: bold; }
-    </style>
+    <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
     <h1>Grocery Store</h1>
-    <div>
-        <h2>Items</h2>
-        <div id="items" class="item-list"></div>
-    </div>
-    <div>
-        <h2>Cart</h2>
-        <div id="cart" class="cart-list"></div>
-        <div class="cart-summary">Total: $<span id="total">0.00</span></div>
+    <div class="narrow-column">
+        <div>
+            <h2>Items</h2>
+            <div class="search-bar">
+                <input type="text" id="searchInput" placeholder="Search items..." oninput="searchItems()">
+            </div>
+            <form id="addForm" class="form-inline" onsubmit="addItem(event)">
+                <input type="text" id="addName" placeholder="Name" required>
+                <input type="number" id="addPrice" placeholder="Price" step="0.01" required>
+                <button type="submit">Add Item</button>
+            </form>
+            <div id="items" class="item-list"></div>
+        </div>
+        <div>
+            <h2>Cart</h2>
+            <div id="cart" class="cart-list"></div>
+            <div class="cart-summary">Total: $<span id="total">0.00</span></div>
+        </div>
     </div>
     <script>
         let items = [];
         let cart = {};
+        let editingIdx = null;
+
+        function fetchItems(search = '') {
+            let url = '/items';
+            if (search) url += '?search=' + encodeURIComponent(search);
+            fetch(url)
+                .then(res => res.json())
+                .then(data => {
+                    items = data;
+                    renderItems();
+                });
+        }
 
         function renderItems() {
             const itemsDiv = document.getElementById('items');
@@ -32,11 +48,29 @@
             items.forEach((item, idx) => {
                 const div = document.createElement('div');
                 div.className = 'item';
-                div.innerHTML = `
-                    <span>${item.name}</span>
-                    <span>$${item.price.toFixed(2)}</span>
-                    <button onclick="addToCart(${idx})">Add</button>
-                `;
+                if (editingIdx === idx) {
+                    div.innerHTML = `
+                        <input type="text" id="editName${idx}" value="${item.name}">
+                        <input type="number" id="editPrice${idx}" value="${item.price}" step="0.01">
+                        <div class="item-actions">
+                            <button onclick="saveEdit(${idx})">Save</button>
+                            <button onclick="cancelEdit()">Cancel</button>
+                        </div>
+                    `;
+                } else {
+                    div.innerHTML = `
+                        <span>${item.name}</span>
+                        <span class="price-cell">
+                            <span class="price-dollar">$</span>
+                            <span class="price-value">${item.price.toFixed(2)}</span>
+                        </span>
+                        <div class="item-actions">
+                            <button onclick="addToCart(${idx})">Add</button>
+                            <button onclick="editItem(${idx})">Edit</button>
+                            <button onclick="deleteItem(${idx})">Delete</button>
+                        </div>
+                    `;
+                }
                 itemsDiv.appendChild(div);
             });
         }
@@ -74,12 +108,57 @@
             }
         }
 
-        fetch('/items')
-            .then(res => res.json())
-            .then(data => {
-                items = data;
-                renderItems();
+        function addItem(event) {
+            event.preventDefault();
+            const name = document.getElementById('addName').value.trim();
+            const price = parseFloat(document.getElementById('addPrice').value);
+            if (!name || isNaN(price)) return;
+            fetch('/items', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, price })
+            }).then(() => {
+                document.getElementById('addForm').reset();
+                fetchItems(document.getElementById('searchInput').value);
             });
+        }
+
+        function editItem(idx) {
+            editingIdx = idx;
+            renderItems();
+        }
+
+        function saveEdit(idx) {
+            const name = document.getElementById('editName' + idx).value.trim();
+            const price = parseFloat(document.getElementById('editPrice' + idx).value);
+            if (!name || isNaN(price)) return;
+            fetch('/items/' + idx, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, price })
+            }).then(() => {
+                editingIdx = null;
+                fetchItems(document.getElementById('searchInput').value);
+            });
+        }
+
+        function cancelEdit() {
+            editingIdx = null;
+            renderItems();
+        }
+
+        function deleteItem(idx) {
+            if (!confirm('Delete this item?')) return;
+            fetch('/items/' + idx, { method: 'DELETE' })
+                .then(() => fetchItems(document.getElementById('searchInput').value));
+        }
+
+        function searchItems() {
+            const search = document.getElementById('searchInput').value;
+            fetchItems(search);
+        }
+
+        // Initial load
+        fetchItems();
     </script>
 </body>
-</html>

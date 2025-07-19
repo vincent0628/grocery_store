@@ -1,0 +1,30 @@
+body { font-family: Arial, sans-serif; margin: 40px; }
+.item-list, .cart-list { margin-bottom: 30px; }
+.item, .cart-item { display: flex; justify-content: space-between; padding: 8px; border-bottom: 1px solid #eee; }
+button { margin-left: 10px; }
+.cart-summary { font-weight: bold; }
+.narrow-column {
+    max-width: 500px;
+    margin: 0 auto;
+    width: 100%;
+}
+.item-actions button { margin-left: 5px; }
+.search-bar { margin-bottom: 20px; }
+.form-inline input { margin-right: 5px; }
+.price-cell {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    min-width: 80px;
+}
+.price-dollar {
+    display: inline-block;
+    width: 18px;
+    text-align: left;
+    margin-right: 4px;
+}
+.price-value {
+    text-align: right;
+    flex: 1;
+    min-width: 50px;
+}
