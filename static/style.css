@@ -58,3 +58,239 @@ button { margin-left: 10px; }
 .item-actions button {
     margin-left: 0;
 }
+
+/* Tab Navigation */
+.tab-container {
+    display: flex;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #eee;
+}
+
+.tab-button {
+    background: none;
+    border: none;
+    padding: 12px 20px;
+    cursor: pointer;
+    font-size: 16px;
+    border-bottom: 3px solid transparent;
+    transition: all 0.3s ease;
+    margin-left: 0;
+}
+
+.tab-button:hover {
+    background-color: #f5f5f5;
+}
+
+.tab-button.active {
+    border-bottom-color: #007bff;
+    background-color: #f8f9fa;
+    font-weight: bold;
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+/* Customer Management */
+.customer-controls {
+    margin-bottom: 20px;
+    padding: 15px;
+    background-color: #f8f9fa;
+    border-radius: 5px;
+}
+
+.customer-selector {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.customer-selector label {
+    font-weight: bold;
+    min-width: 80px;
+}
+
+.customer-selector select {
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    min-width: 150px;
+}
+
+.add-customer-form {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.add-customer-form input {
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    flex: 1;
+}
+
+/* Price Information Display */
+.price-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    min-width: 100px;
+}
+
+.price-info small {
+    color: #666;
+    font-size: 12px;
+    margin-bottom: 2px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+    .tab-container {
+        flex-direction: column;
+    }
+    
+    .tab-button {
+        border-bottom: none;
+        border-left: 3px solid transparent;
+    }
+    
+    .tab-button.active {
+        border-left-color: #007bff;
+        border-bottom-color: transparent;
+    }
+    
+    .customer-selector {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .customer-selector label {
+        min-width: auto;
+    }
+}
+
+/* Customer Page Layout */
+.customer-page-layout {
+    display: flex;
+    gap: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.customer-left-panel {
+    flex: 2;
+    min-width: 0;
+}
+
+.customer-right-panel {
+    flex: 1;
+    min-width: 300px;
+    background-color: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    height: fit-content;
+    position: sticky;
+    top: 20px;
+}
+
+.customer-right-panel h2 {
+    margin-top: 0;
+    color: #333;
+    border-bottom: 2px solid #007bff;
+    padding-bottom: 10px;
+}
+
+.cart-actions {
+    margin-top: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.cart-actions button {
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+.cart-actions button:first-child {
+    background-color: #dc3545;
+    color: white;
+}
+
+.cart-actions button:first-child:hover {
+    background-color: #c82333;
+}
+
+.cart-actions button:last-child {
+    background-color: #28a745;
+    color: white;
+}
+
+.cart-actions button:last-child:hover {
+    background-color: #218838;
+}
+
+/* Enhanced cart summary */
+.customer-right-panel .cart-summary {
+    font-size: 18px;
+    font-weight: bold;
+    color: #007bff;
+    padding: 15px;
+    background-color: white;
+    border-radius: 5px;
+    text-align: center;
+    margin: 15px 0;
+    border: 2px solid #007bff;
+}
+
+/* Responsive design for customer page */
+@media (max-width: 768px) {
+    .customer-page-layout {
+        flex-direction: column;
+    }
+    
+    .customer-right-panel {
+        position: static;
+        order: -1;
+        margin-bottom: 20px;
+    }
+    
+    .cart-actions {
+        flex-direction: row;
+    }
+    
+    .cart-actions button {
+        flex: 1;
+    }
+}
+
+/* Delete Button Styling */
+.delete-btn {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    margin-left: 5px;
+}
+
+.delete-btn:hover {
+    background-color: #c82333;
+}
+
+.delete-btn:active {
+    background-color: #bd2130;
+}

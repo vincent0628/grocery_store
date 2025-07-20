@@ -7,6 +7,16 @@
 </head>
 <body>
     <h1>雜貨店</h1>
+    
+    <!-- Navigation Tabs -->
+    <div class="tab-container">
+        <button class="tab-button active" onclick="showTab('inventory')">庫存管理</button>
+        <button class="tab-button" onclick="showTab('standard-prices')">標準售價</button>
+        <button class="tab-button" onclick="showTab('customer-prices')">客戶報價</button>
+    </div>
+    
+    <!-- Inventory Management Tab -->
+    <div id="inventory-tab" class="tab-content active">
     <div class="narrow-column">
         <div>
             <h2>商品</h2>
@@ -26,139 +36,62 @@
             <div class="cart-summary">總計: $<span id="total">0.00</span></div>
         </div>
     </div>
-    <script>
-        let items = [];
-        let cart = {};
-        let editingIdx = null;
-
-        function fetchItems(search = '') {
-            let url = '/items';
-            if (search) url += '?search=' + encodeURIComponent(search);
-            fetch(url)
-                .then(res => res.json())
-                .then(data => {
-                    items = data;
-                    renderItems();
-                });
-        }
-
-        function renderItems() {
-            const itemsDiv = document.getElementById('items');
-            itemsDiv.innerHTML = '';
-            items.forEach((item, idx) => {
-                const div = document.createElement('div');
-                div.className = 'item';
-                if (editingIdx === idx) {
-                    div.innerHTML = `
-                        <input type="text" id="editName${idx}" value="${item.name}">
-                        <input type="number" id="editPrice${idx}" value="${item.price}" step="0.01">
-                        <div class="item-actions">
-                            <button onclick="saveEdit(${idx})">儲存</button>
-                            <button onclick="cancelEdit()">取消</button>
-                        </div>
-                    `;
-                } else {
-                    div.innerHTML = `
-                        <span>${item.name}</span>
-                        <span class="price-cell">
-                            <span class="price-dollar">$</span>
-                            <span class="price-value">${item.price.toFixed(2)}</span>
-                        </span>
-                        <div class="item-actions">
-                            <button onclick="addToCart(${idx})">加入</button>
-                            <button onclick="editItem(${idx})">編輯</button>
-                            <button onclick="deleteItem(${idx})">刪除</button>
-                        </div>
-                    `;
-                }
-                itemsDiv.appendChild(div);
-            });
-        }
-
-        function renderCart() {
-            const cartDiv = document.getElementById('cart');
-            cartDiv.innerHTML = '';
-            let total = 0;
-            Object.keys(cart).forEach(idx => {
-                const item = items[idx];
-                const qty = cart[idx];
-                total += item.price * qty;
-                const div = document.createElement('div');
-                div.className = 'cart-item';
-                div.innerHTML = `
-                    <span>${item.name} x ${qty}</span>
-                    <span>$${(item.price * qty).toFixed(2)}</span>
-                    <button onclick="removeFromCart(${idx})">移除</button>
-                `;
-                cartDiv.appendChild(div);
-            });
-            document.getElementById('total').textContent = total.toFixed(2);
-        }
-
-        function addToCart(idx) {
-            cart[idx] = (cart[idx] || 0) + 1;
-            renderCart();
-        }
-
-        function removeFromCart(idx) {
-            if (cart[idx]) {
-                cart[idx] -= 1;
-                if (cart[idx] <= 0) delete cart[idx];
-                renderCart();
-            }
-        }
-
-        function addItem(event) {
-            event.preventDefault();
-            const name = document.getElementById('addName').value.trim();
-            const price = parseFloat(document.getElementById('addPrice').value);
-            if (!name || isNaN(price)) return;
-            fetch('/items', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ name, price })
-            }).then(() => {
-                document.getElementById('addForm').reset();
-                fetchItems(document.getElementById('searchInput').value);
-            });
-        }
-
-        function editItem(idx) {
-            editingIdx = idx;
-            renderItems();
-        }
-
-        function saveEdit(idx) {
-            const name = document.getElementById('editName' + idx).value.trim();
-            const price = parseFloat(document.getElementById('editPrice' + idx).value);
-            if (!name || isNaN(price)) return;
-            fetch('/items/' + idx, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ name, price })
-            }).then(() => {
-                editingIdx = null;
-                fetchItems(document.getElementById('searchInput').value);
-            });
-        }
-
-        function cancelEdit() {
-            editingIdx = null;
-            renderItems();
-        }
-
-        function deleteItem(idx) {
-            if (!confirm('Delete this item?')) return;
-            fetch('/items/' + idx, { method: 'DELETE' })
-                .then(() => fetchItems(document.getElementById('searchInput').value));
-        }
-
-        function searchItems() {
-            const search = document.getElementById('searchInput').value;
-            fetchItems(search);
-        }
-
-        // Initial load
-        fetchItems();
-    </script>
+    </div>
+    
+    <!-- Standard Prices Tab -->
+    <div id="standard-prices-tab" class="tab-content">
+    <div class="narrow-column">
+        <div>
+            <h2>標準售價設定</h2>
+            <div class="search-bar">
+                <input type="text" id="standardSearchInput" placeholder="搜尋商品..." oninput="searchStandardPrices()">
+            </div>
+            <div id="standard-prices" class="item-list"></div>
+        </div>
+    </div>
+    </div>
+    
+    <!-- Customer Prices Tab -->
+    <div id="customer-prices-tab" class="tab-content">
+    <div class="customer-page-layout">
+        <div class="customer-left-panel">
+            <h2>客戶報價管理</h2>
+            <div class="customer-controls">
+                <div class="customer-selector">
+                    <label>選擇客戶：</label>
+                    <select id="customerSelect" onchange="loadCustomerPrices()">
+                        <option value="">請選擇客戶</option>
+                    </select>
+                    <button onclick="showAddCustomerForm()">新增客戶</button>
+                    <button onclick="deleteCustomer()" class="delete-btn">刪除客戶</button>
+                </div>
+                <div id="add-customer-form" class="add-customer-form" style="display: none;">
+                    <input type="text" id="newCustomerName" placeholder="客戶名稱">
+                    <button onclick="addCustomer()">確認新增</button>
+                    <button onclick="hideAddCustomerForm()">取消</button>
+                </div>
+            </div>
+            <div class="search-bar">
+                <input type="text" id="customerSearchInput" placeholder="搜尋商品..." oninput="searchCustomerPrices()">
+            </div>
+            <div id="customer-prices" class="item-list"></div>
+        </div>
+        <div class="customer-right-panel">
+            <h2>購物車</h2>
+            <div id="customer-cart" class="cart-list"></div>
+            <div class="cart-summary">總計: $<span id="customer-total">0.00</span></div>
+            <div class="cart-actions">
+                <button onclick="clearCustomerCart()">清空購物車</button>
+                <button onclick="printCustomerQuote()">列印報價單</button>
+            </div>
+        </div>
+    </div>
+    </div>
+    
+    <!-- JavaScript 模組 -->
+    <script src="/static/js/app.js"></script>
+    <script src="/static/js/inventory.js"></script>
+    <script src="/static/js/standardPrices.js"></script>
+    <script src="/static/js/customerPrices.js"></script>
+    <script src="/static/js/main.js"></script>
 </body>
