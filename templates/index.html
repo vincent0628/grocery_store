@@ -2,28 +2,28 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Grocery Store</title>
+    <title>雜貨店</title>
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
-    <h1>Grocery Store</h1>
+    <h1>雜貨店</h1>
     <div class="narrow-column">
         <div>
-            <h2>Items</h2>
+            <h2>商品</h2>
             <div class="search-bar">
-                <input type="text" id="searchInput" placeholder="Search items..." oninput="searchItems()">
+                <input type="text" id="searchInput" placeholder="搜尋商品..." oninput="searchItems()">
             </div>
             <form id="addForm" class="form-inline" onsubmit="addItem(event)">
-                <input type="text" id="addName" placeholder="Name" required>
-                <input type="number" id="addPrice" placeholder="Price" step="0.01" required>
-                <button type="submit">Add Item</button>
+                <input type="text" id="addName" placeholder="商品名稱" required>
+                <input type="number" id="addPrice" placeholder="價格" step="0.01" required>
+                <button type="submit">新增商品</button>
             </form>
             <div id="items" class="item-list"></div>
         </div>
         <div>
-            <h2>Cart</h2>
+            <h2>購物車</h2>
             <div id="cart" class="cart-list"></div>
-            <div class="cart-summary">Total: $<span id="total">0.00</span></div>
+            <div class="cart-summary">總計: $<span id="total">0.00</span></div>
         </div>
     </div>
     <script>
@@ -53,8 +53,8 @@
                         <input type="text" id="editName${idx}" value="${item.name}">
                         <input type="number" id="editPrice${idx}" value="${item.price}" step="0.01">
                         <div class="item-actions">
-                            <button onclick="saveEdit(${idx})">Save</button>
-                            <button onclick="cancelEdit()">Cancel</button>
+                            <button onclick="saveEdit(${idx})">儲存</button>
+                            <button onclick="cancelEdit()">取消</button>
                         </div>
                     `;
                 } else {
@@ -65,9 +65,9 @@
                             <span class="price-value">${item.price.toFixed(2)}</span>
                         </span>
                         <div class="item-actions">
-                            <button onclick="addToCart(${idx})">Add</button>
-                            <button onclick="editItem(${idx})">Edit</button>
-                            <button onclick="deleteItem(${idx})">Delete</button>
+                            <button onclick="addToCart(${idx})">加入</button>
+                            <button onclick="editItem(${idx})">編輯</button>
+                            <button onclick="deleteItem(${idx})">刪除</button>
                         </div>
                     `;
                 }
@@ -88,7 +88,7 @@
                 div.innerHTML = `
                     <span>${item.name} x ${qty}</span>
                     <span>$${(item.price * qty).toFixed(2)}</span>
-                    <button onclick="removeFromCart(${idx})">Remove</button>
+                    <button onclick="removeFromCart(${idx})">移除</button>
                 `;
                 cartDiv.appendChild(div);
             });
