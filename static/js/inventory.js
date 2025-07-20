@@ -27,12 +27,15 @@ class InventoryManager {
             const div = document.createElement('div');
             div.className = 'item';
             
-            if (this.app.editingIdx === idx) {
+            // 使用原始索引（如果存在）或當前索引
+            const realIdx = item.original_index !== undefined ? item.original_index : idx;
+            
+            if (this.app.editingIdx === realIdx) {
                 div.innerHTML = `
-                    <input type="text" id="editName${idx}" value="${item.name}">
-                    <input type="number" id="editPrice${idx}" value="${item.price}" step="0.01">
+                    <input type="text" id="editName${realIdx}" value="${item.name}">
+                    <input type="number" id="editPrice${realIdx}" value="${item.price}" step="0.01">
                     <div class="item-actions">
-                        <button onclick="inventoryManager.saveEdit(${idx})">儲存</button>
+                        <button onclick="inventoryManager.saveEdit(${realIdx})">儲存</button>
                         <button onclick="inventoryManager.cancelEdit()">取消</button>
                     </div>
                 `;
@@ -44,9 +47,9 @@ class InventoryManager {
                         <span class="price-value">${item.price.toFixed(2)}</span>
                     </span>
                     <div class="item-actions">
-                        <button onclick="inventoryManager.addToCart(${idx})">加入</button>
-                        <button onclick="inventoryManager.editItem(${idx})">編輯</button>
-                        <button onclick="inventoryManager.deleteItem(${idx})">刪除</button>
+                        <button onclick="inventoryManager.addToCart(${realIdx})">加入</button>
+                        <button onclick="inventoryManager.editItem(${realIdx})">編輯</button>
+                        <button onclick="inventoryManager.deleteItem(${realIdx})">刪除</button>
                     </div>
                 `;
             }
@@ -169,11 +172,36 @@ class InventoryManager {
     }
 }
 
-// 全域函數（為了向後兼容HTML中的onclick事件）
+// 全域函數（為了向後相容HTML中的onclick事件）
 function addItem(event) {
     inventoryManager.addItem(event);
 }
 
 function searchItems() {
     inventoryManager.searchItems();
+}
+
+// 庫存管理相關的全域函數
+function editItem(idx) {
+    inventoryManager.editItem(idx);
+}
+
+function saveEdit(idx) {
+    inventoryManager.saveEdit(idx);
+}
+
+function cancelEdit() {
+    inventoryManager.cancelEdit();
+}
+
+function deleteItem(idx) {
+    inventoryManager.deleteItem(idx);
+}
+
+function addToCart(idx) {
+    inventoryManager.addToCart(idx);
+}
+
+function removeFromCart(idx) {
+    inventoryManager.removeFromCart(idx);
 }

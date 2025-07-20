@@ -54,8 +54,22 @@ def get_items():
     search = request.args.get('search', '').lower()
     items = read_items()
     if search:
-        items = [item for item in items if search in item['name'].lower()]
-    return jsonify(items)
+        # 為搜尋結果保持原始索引
+        filtered_items = []
+        for idx, item in enumerate(items):
+            if search in item['name'].lower():
+                item_with_index = item.copy()
+                item_with_index['original_index'] = idx
+                filtered_items.append(item_with_index)
+        return jsonify(filtered_items)
+    else:
+        # 為所有商品添加原始索引
+        items_with_index = []
+        for idx, item in enumerate(items):
+            item_with_index = item.copy()
+            item_with_index['original_index'] = idx
+            items_with_index.append(item_with_index)
+        return jsonify(items_with_index)
 
 @app.route('/items', methods=['POST'])
 def add_item():
