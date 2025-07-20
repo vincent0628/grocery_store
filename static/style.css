@@ -1,7 +1,17 @@
 body { font-family: Arial, sans-serif; margin: 40px; }
 .item-list, .cart-list { margin-bottom: 30px; }
-.item, .cart-item { display: flex; justify-content: space-between; padding: 8px; border-bottom: 1px solid #eee; }
+.item, .cart-item { 
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    gap: 10px;
+    align-items: center;
+    padding: 8px;
+    border-bottom: 1px solid #eee;
+}
 button { margin-left: 10px; }
+
+/* Override for item action buttons */
+.item-actions button { margin-left: 0; }
 .cart-summary { font-weight: bold; }
 .narrow-column {
     max-width: 500px;
@@ -16,6 +26,7 @@ button { margin-left: 10px; }
     align-items: center;
     justify-content: flex-end;
     min-width: 80px;
+    white-space: nowrap;
 }
 .price-dollar {
     display: inline-block;
@@ -27,4 +38,23 @@ button { margin-left: 10px; }
     text-align: right;
     flex: 1;
     min-width: 50px;
+}
+
+/* Item name styling for consistent layout */
+.item > span:first-child {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    min-width: 0;
+}
+
+/* Ensure action buttons don't wrap */
+.item-actions {
+    white-space: nowrap;
+    display: flex;
+    gap: 5px;
+}
+
+.item-actions button {
+    margin-left: 0;
 }
