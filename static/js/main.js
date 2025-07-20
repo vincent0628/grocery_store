@@ -7,9 +7,10 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // 初始化所有管理器
-    window.inventoryManager = new InventoryManager(window.groceryApp);
-    window.standardPricesManager = new StandardPricesManager(window.groceryApp);
-    window.customerPricesManager = new CustomerPricesManager(window.groceryApp);
+    window.inventoryManager = window.groceryApp.inventoryManager;
+    window.standardPricesManager = window.groceryApp.standardPricesManager;
+    window.customerPricesManager = window.groceryApp.customerPricesManager;
+    window.backupManager = window.groceryApp.backupManager;
     
     // 設置表單事件監聽器
     const addForm = document.getElementById('addForm');

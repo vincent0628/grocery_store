@@ -3,7 +3,10 @@ class GroceryStoreApp {
     constructor() {
         this.items = [];
         this.cart = {};
-        this.editingIdx = null;
+        this.inventoryManager = new InventoryManager(this);
+        this.standardPricesManager = new StandardPricesManager(this);
+        this.customerPricesManager = new CustomerPricesManager(this);
+        this.backupManager = new BackupManager(this);
         this.standardPrices = [];
         this.customers = [];
         this.currentCustomer = '';
@@ -46,6 +49,11 @@ class GroceryStoreApp {
             this.fetchCustomers();
         } else if (tabName === 'inventory') {
             this.fetchItems();
+        } else if (tabName === 'backup-management') {
+            // 初始化備份管理頁面
+            if (this.backupManager) {
+                this.backupManager.fetchBackups();
+            }
         }
     }
 }

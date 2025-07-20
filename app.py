@@ -1,8 +1,12 @@
 from flask import Flask, render_template, jsonify, request
 import json
 import os
+from backup_manager import BackupManager
 
 app = Flask(__name__)
+
+# 初始化備份管理器
+backup_manager = BackupManager()
 
 ITEMS_FILE = 'item_prices.json'
 STANDARD_PRICES_FILE = 'standard_prices.json'
@@ -73,6 +77,9 @@ def get_items():
 
 @app.route('/items', methods=['POST'])
 def add_item():
+    # 在修改前建立自動備份
+    backup_manager.create_backup('auto', '新增商品前自動備份')
+    
     items = read_items()
     data = request.json
     items.append({'name': data['name'], 'price': float(data['price'])})
@@ -81,6 +88,9 @@ def add_item():
 
 @app.route('/items/<int:item_id>', methods=['PUT'])
 def update_item(item_id):
+    # 在修改前建立自動備份
+    backup_manager.create_backup('auto', '編輯商品前自動備份')
+    
     items = read_items()
     if 0 <= item_id < len(items):
         data = request.json
@@ -92,6 +102,9 @@ def update_item(item_id):
 
 @app.route('/items/<int:item_id>', methods=['DELETE'])
 def delete_item(item_id):
+    # 在刪除前建立自動備份
+    backup_manager.create_backup('auto', '刪除商品前自動備份')
+    
     items = read_items()
     if 0 <= item_id < len(items):
         items.pop(item_id)
@@ -193,6 +206,9 @@ def get_customer_prices(customer_name):
 
 @app.route('/customer-prices/<customer_name>', methods=['POST'])
 def update_customer_prices(customer_name):
+    # 在修改前建立自動備份
+    backup_manager.create_backup('auto', f'更新客戶 {customer_name} 報價前自動備份')
+    
     data = request.json
     customer_prices = read_customer_prices()
     
@@ -214,6 +230,45 @@ def delete_customer(customer_name):
         return jsonify({'success': True})
     return jsonify({'error': 'Customer not found'}), 404
 
+
+# Backup management endpoints
+@app.route('/backups', methods=['GET'])
+def list_backups():
+    """列出所有備份"""
+    backups = backup_manager.list_backups()
+    return jsonify(backups)
+
+@app.route('/backups', methods=['POST'])
+def create_backup():
+    """建立手動備份"""
+    data = request.json or {}
+    description = data.get('description', '手動備份')
+    backup_id = backup_manager.create_backup('manual', description)
+    return jsonify({'success': True, 'backup_id': backup_id})
+
+@app.route('/backups/<backup_id>', methods=['GET'])
+def get_backup_info(backup_id):
+    """獲取備份詳細資訊"""
+    backup_info = backup_manager.get_backup_info(backup_id)
+    if backup_info:
+        return jsonify(backup_info)
+    return jsonify({'error': 'Backup not found'}), 404
+
+@app.route('/backups/<backup_id>/restore', methods=['POST'])
+def restore_backup(backup_id):
+    """還原備份"""
+    success = backup_manager.restore_backup(backup_id)
+    if success:
+        return jsonify({'success': True, 'message': '備份還原成功'})
+    return jsonify({'error': '備份還原失敗'}), 400
+
+@app.route('/backups/<backup_id>', methods=['DELETE'])
+def delete_backup(backup_id):
+    """刪除備份"""
+    success = backup_manager.delete_backup(backup_id)
+    if success:
+        return jsonify({'success': True, 'message': '備份刪除成功'})
+    return jsonify({'error': '備份刪除失敗'}), 400
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
