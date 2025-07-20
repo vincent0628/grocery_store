@@ -119,7 +119,9 @@ class InventoryManager {
             });
             
             document.getElementById('addForm').reset();
-            this.fetchItems(document.getElementById('searchInput').value);
+            const searchInput = document.getElementById('searchInput');
+            const searchValue = searchInput ? searchInput.value : '';
+            this.fetchItems(searchValue);
         } catch (error) {
             console.error('Error adding item:', error);
         }
@@ -144,7 +146,9 @@ class InventoryManager {
             });
             
             this.app.editingIdx = null;
-            this.fetchItems(document.getElementById('searchInput').value);
+            const searchInput = document.getElementById('searchInput');
+            const searchValue = searchInput ? searchInput.value : '';
+            this.fetchItems(searchValue);
         } catch (error) {
             console.error('Error saving edit:', error);
         }
@@ -160,7 +164,9 @@ class InventoryManager {
         
         try {
             await fetch('/items/' + idx, { method: 'DELETE' });
-            this.fetchItems(document.getElementById('searchInput').value);
+            const searchInput = document.getElementById('searchInput');
+            const searchValue = searchInput ? searchInput.value : '';
+            this.fetchItems(searchValue);
         } catch (error) {
             console.error('Error deleting item:', error);
         }
