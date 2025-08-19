@@ -4,7 +4,7 @@ calculate the price
 
 8/15
 -- 白長壽 550
-[UBER] -484
+[UBER] -484 機場到cotice ground 飯店
 - 雪濃湯 1642
 - BHC chicken 516
 - -----------
@@ -17,6 +17,7 @@ calculate the price
 
 - [UBER] -128 回 cotice ground
 - [UBER] -442 cotice ground飯店到廣安里飯店
+
 
 8/15 個人
 -- 氣跑水 1+1 35
