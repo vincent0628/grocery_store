@@ -17,13 +17,14 @@ calculate the price
 
 - [UBER] -148 纜車 到 樂天 mart
 - [UBER] -128 樂天 mart 回 cotice ground
-- [UBER] -442 cotice ground飯店到廣安里飯店
-
+- [UBER] -442 cotice ground飯店到airbnb
+- [UBER] -161 豬肉湯飯 回airbnb
 
 8/15 個人
 -- 氣跑水 1+1 35
 -- 711 優格49
 -- 樂天 mart 3228
-
+-- 玉米鬚茶 21
+-- 玉米鬚茶 vline 47
 
 
