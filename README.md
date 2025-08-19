@@ -14,7 +14,7 @@ calculate the price
 - [UBER] -109 到咖啡廳 
 - [UBER] 免單 咖啡廳到太宗台
 - 纜車 小吃 / 烤肉 / 年糕 / 大熱狗 / 魚板... . 423+86+238
-
+- [UBER] -太宗台到纜車
 - [UBER] -148 纜車 到 甘川洞
 - [UBER] -148 甘川洞 到 樂天 mart
 - [UBER] -128 樂天 mart 回 cotice ground
