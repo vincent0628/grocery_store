@@ -3,7 +3,7 @@ calculate the price
 ... test
 
 8/15
--- 白長壽 550 +1650
+
 [UBER] -484 機場到cotice ground 飯店
 - 雪濃湯 1642
 - BHC chicken 516
@@ -47,3 +47,4 @@ calculate the price
 -- NATIONAL GEO 包包+拖鞋 1695 
 -- MLB 4967
 -- EMART 沙拉+南瓜湯181
+-- 白長壽 550 +1650
